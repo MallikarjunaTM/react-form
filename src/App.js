@@ -1,49 +1,49 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useState} from 'react';
+import React, {useRef,useEffect} from 'react';
 
 function App() {
-  const [name,setName]=useState("");
-  const [income,setIncome]=useState("");
+  const nameref=useRef();
+  const ageref=useRef();
+  const marriedref=useRef();
+  const submitref=useRef();
 
-  const handleChangeName=e=>{
-    const value=e.target.value;
-    const name=e.target.name;
-    console.log(value);
-    console.log(name)
-    if(name==='name'){
-      setName(value);
+  useEffect(()=>{
+    nameref.current.focus();
+  },[])
+ 
+  const pressKeyHandle = e=>{
+    if(e.keyCode===13){
+      if(e.target.id==='nameId'){
+        ageref.current.focus();
+      }
+      if(e.target.id==='ageId'){
+        marriedref.current.focus();
+      }
+      if(e.target.id==='marriedId'){
+        submitref.current.focus();
+      }
+
     }
-
-    if(name==='income'){
-      setIncome(value)
-    }
-    
-  }
-
-  const handleSubmit=e=>{
-    console.log("state  ",name);
-    e.preventDefault();
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <span>Enter a Name:</span>
-            <input type='text' name='name' value={name}  onChange={handleChangeName}/>
-          </div>
-          <div>
-            <span>Enter a Income:</span>
-            <select name='income' value={income} onChange={handleChangeName}>
-              <option value='High'>High</option>
-              <option value='Mid'>Mid</option>
-              <option value='Low'>Low</option>
-            </select>
-          </div>
-          <input type='submit' name='submit'/>
-        </form>
+        <h3>UseRef Hooks</h3>
+        <div className='form-field'>
+          <span>Enter Name</span>
+          <input ref={nameref} id='nameId' type='text' name='name' onKeyDown={pressKeyHandle}/>
+        </div>
+        <div className='form-field'>
+          <span>Enter Age</span>
+          <input ref={ageref} type='text' id='ageId' name='age' onKeyDown={pressKeyHandle}/>
+        </div>
+        <div className='form-field'>
+          <span>Married</span>
+          <input ref={marriedref} type='checkbox' id='marriedId' onKeyDown={pressKeyHandle}/>
+        </div>
+        <button ref={submitref}>submit</button>
       </header>
     </div>
   );
