@@ -1,49 +1,36 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useState} from 'react';
-
+import React, {useRef,useEffect} from 'react';
+import Input from './components/Input';
 function App() {
-  const [name,setName]=useState("");
-  const [income,setIncome]=useState("");
+ const inputStyle={
+   marginBottom:'5px',
+   width:'400px',
+   height:'40px',
+   fontSize:'30px'
+ }
+ const firstnameRef=useRef();
+ const lastnameRef=useRef();
 
-  const handleChangeName=e=>{
-    const value=e.target.value;
-    const name=e.target.name;
-    console.log(value);
-    console.log(name)
-    if(name==='name'){
-      setName(value);
-    }
+ useEffect(()=>{
+   firstnameRef.current.focus();
+ },[])
 
-    if(name==='income'){
-      setIncome(value)
-    }
-    
-  }
+ const onFirstNameKeyDown = (e)=>{
+   if(e.key==='Enter'){
+     lastnameRef.current.focus();
+   }
+ }
 
-  const handleSubmit=e=>{
-    console.log("state  ",name);
-    e.preventDefault();
-  }
+ const onLastNameKeyDown = e =>{
+   
+ }
 
   return (
     <div className="App">
       <header className="App-header">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <span>Enter a Name:</span>
-            <input type='text' name='name' value={name}  onChange={handleChangeName}/>
-          </div>
-          <div>
-            <span>Enter a Income:</span>
-            <select name='income' value={income} onChange={handleChangeName}>
-              <option value='High'>High</option>
-              <option value='Mid'>Mid</option>
-              <option value='Low'>Low</option>
-            </select>
-          </div>
-          <input type='submit' name='submit'/>
-        </form>
+        <Input ref={firstnameRef} onKeyDown={onFirstNameKeyDown} placeholder="enter your first name" style={inputStyle}/>
+        <Input ref={lastnameRef} onKeyDown={onLastNameKeyDown} placeholder="enter your last name" style={inputStyle}/>
       </header>
     </div>
   );
