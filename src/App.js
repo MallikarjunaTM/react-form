@@ -1,51 +1,52 @@
-import logo from './logo.svg';
 import './App.css';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, NavLink, Redirect,Prompt } from 'react-router-dom';
+import AboutPage from './component/AboutPage';
+import messageContext from './context/messageContext';
+import HomePage from './component/HomePage';
 
 function App() {
-  const [name,setName]=useState("");
-  const [income,setIncome]=useState("");
-
-  const handleChangeName=e=>{
-    const value=e.target.value;
-    const name=e.target.name;
-    console.log(value);
-    console.log(name)
-    if(name==='name'){
-      setName(value);
-    }
-
-    if(name==='income'){
-      setIncome(value)
-    }
-    
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [age,setAge] = useState(null);
+  const [message,setMessage] = useState('I am being Shared');
+  const handleClicked = e => {
+    setLoggedIn(!loggedIn);
   }
 
-  const handleSubmit=e=>{
-    console.log("state  ",name);
-    e.preventDefault();
+  const handleChange = e =>{
+    setAge(e.target.value);
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <span>Enter a Name:</span>
-            <input type='text' name='name' value={name}  onChange={handleChangeName}/>
-          </div>
-          <div>
-            <span>Enter a Income:</span>
-            <select name='income' value={income} onChange={handleChangeName}>
-              <option value='High'>High</option>
-              <option value='Mid'>Mid</option>
-              <option value='Low'>Low</option>
-            </select>
-          </div>
-          <input type='submit' name='submit'/>
-        </form>
-      </header>
-    </div>
+    <BrowserRouter>
+    <messageContext.Provider value={[message,setMessage]}>
+      <div className="App">
+        <header className="App-header">
+          <ul className='ul-style'>
+            <li className='li-style'><NavLink className='App-link' to='/' exact activeClassName='link-style' >HomePage</NavLink></li>
+            <li className='li-style'><NavLink className='App-link' to='/about' exact activeClassName='link-style' >About</NavLink></li>
+            <li className='li-style'><NavLink className='App-link' to='/user/jhon/jhonson' exact activeClassName='link-style' >User Jhon Doe</NavLink></li>
+          </ul>
+          <Prompt when={ loggedIn && !age } message={(location)=>
+          location.pathname.startsWith('/user')?true:'are you sure'}/>
+          <Route path='/' exact render={()=><HomePage/>}/>
+          <Route path='/about' exact component={AboutPage} />
+          <Route path='/user/:firstName/:lastName'
+            exact render={({ match }) => {
+              return loggedIn ?
+                
+              (
+                <div>
+                <h1>Age:{age}</h1>  
+                <input type='text' value={age} onChange={handleChange}/>
+                Welcome:{match.params.firstName}{match.params.lastName}</div>) :
+                (<Redirect to='/'></Redirect>)
+            }} />
+          <button className='button' onClick={handleClicked}>{loggedIn ? 'logout' : 'login'}</button>
+        </header>
+      </div>
+      </messageContext.Provider>
+    </BrowserRouter>
   );
 }
 
